@@ -642,7 +642,7 @@ def get_parameters_input() -> tuple[list, list, list]:
     print()
     
     while True:
-        add_param = input("Add a parameter? [y/N]: ").strip().lower()
+        add_param = input("Add a new parameter? [y/N]: ").strip().lower()
         if add_param not in ('y', 'yes'):
             break
         
@@ -955,9 +955,12 @@ def main():
             print("=" * 60)
             print("  BioLSHasher only contains tests related to Locality-Sensitive")
             print("  Hashing (LSH). Non-LSH hash functions are not supported by")
-            print("  the current test infrastructure.")
+            print("  the current tests.")
             print()
-            print("  If you believe your hash has LSH properties, please rerun")
+            print("  Non-LSH hash functions are supported as helper functions")
+            print("  inside an LSH hash function and they can be added manually.")
+            print()
+            print("  If you want to test your hash for LSH properties, please rerun")
             print("  this script and select 'Y' at the LSH candidacy step.")
             print("=" * 60)
             sys.exit(0)
