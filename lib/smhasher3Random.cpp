@@ -16,6 +16,7 @@
  * along with this program.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
+#include <vector>
 #include "specifics.h"
 #include "stats.h"  // for distribution testing
 #include "timings.h"
