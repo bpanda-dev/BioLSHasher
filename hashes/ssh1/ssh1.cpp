@@ -22,6 +22,9 @@ const char ALPHABET[ALPHABETSIZE] = {'A', 'C', 'G', 'T'};
 #define SUBSEQUENCE_LENGTH 25
 #define D_PARAM 1
 
+
+int d_param = 10;
+
 #define MAXK 100
 #define MAXD 100
 
@@ -534,12 +537,12 @@ REGISTER_FAMILY(SubseqHash,
 REGISTER_HASH(SubseqHash_64,
    $.desc            = "Subsequence hash with edit distance tolerance (64-bit)",
    $.hash_flags      = FLAG_HASH_LOCALITY_SENSITIVE,
-   $.impl_flags      = FLAG_IMPL_VERY_SLOW | FLAG_IMPL_SMALL_SEQUENCE_LENGTH,
+   $.impl_flags      = FLAG_IMPL_VERY_SLOW,
    $.bits            = 64,
    $.hashfn			 = SubseqHash64,
    $.parameterNames  = {"k", "d"},
    $.parameterDescriptions  = {"Subsequence Length 'k'", "Parameter 'd'"},
-   $.parameterValues = {SUBSEQUENCE_LENGTH, D_PARAM},
+   $.parameterValues = {SUBSEQUENCE_LENGTH, d_param},
    $.similarityfn   = EditSimilarity,
    $.similarity_name = "Edit",
    $.check_equality_fn = check_equality_64

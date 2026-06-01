@@ -50,7 +50,6 @@ inline std::ostream& operator<<(std::ostream& os, const std::variant<int, float,
     FLAG_EXPAND(IMPL_MULTIPLY)         \
     FLAG_EXPAND(IMPL_MULTIPLY_64_64)   \
     FLAG_EXPAND(IMPL_MULTIPLY_64_128)  \
-    FLAG_EXPAND(IMPL_SMALL_SEQUENCE_LENGTH) \
     FLAG_EXPAND(IMPL_LICENSE_PUBLIC_DOMAIN) \
     FLAG_EXPAND(IMPL_LICENSE_BOOST)         \
     FLAG_EXPAND(IMPL_LICENSE_BSD)           \
@@ -181,9 +180,9 @@ class HashInfo {
         return !!(impl_flags & FLAG_IMPL_VERY_SLOW);
     }
 
-    [[nodiscard]] FORCE_INLINE bool onlyShortSequenceLength() const {
-        return !!(impl_flags & FLAG_IMPL_SMALL_SEQUENCE_LENGTH);
-    }
+    // [[nodiscard]] FORCE_INLINE bool onlyShortSequenceLength() const {
+    //     return !!(impl_flags & FLAG_IMPL_SMALL_SEQUENCE_LENGTH);
+    // }
 
     [[nodiscard]] FORCE_INLINE bool isLocalSensitive() const {
         return !!(hash_flags & FLAG_HASH_LOCALITY_SENSITIVE);

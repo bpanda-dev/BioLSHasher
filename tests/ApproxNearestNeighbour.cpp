@@ -219,14 +219,7 @@ bool LSHApproxNearestNeighbourTest(const HashInfo *hinfo, flags_t flags) {
 		throw std::runtime_error("Error: Could not open output file");
 	}
 
-    uint32_t sequenceLength;
-    if(hinfo->onlyShortSequenceLength()){ //TODO: ADD DIFFERENT SEQ LENGTHS
-        printf("Hash %s is marked for only Short Sequence Length.\n", hinfo->name);
-        sequenceLength = g_sequenceLengthForApproxNNTest;  // Same
-    }
-    else{
-        sequenceLength = g_sequenceLengthForApproxNNTest; // Same
-    }
+    uint32_t sequenceLength = g_SequenceLength;
 
     SetIsTestActive(true);
     SeedGenerator seedGen(g_GoldenRatio ^ std::chrono::system_clock::now().time_since_epoch().count());

@@ -1,0 +1,101 @@
+# ====================================================================================
+# BioLSHasher Configuration File
+# ====================================================================================
+
+# ==========================================
+# Mutation Model Configuration
+# ==========================================
+# For more information, visit:
+# https://biolshasher-guide.readthedocs.io/en/latest/content/mutationModels.html
+
+[Mutation_Model_Configuration]
+
+# Mutation Model Selection
+# 0 = SIMPLE_SNP_ONLY (substitutions only)
+# 1 = GEOMETRIC_MUTATOR (substitutions + indels)
+Mutation_Model = 1
+
+# Mutation Expression Type
+# 0 = BALANCED (equal SNP/ins/del occurrence probabilities)
+# 1 = SUB_ONLY (substitutions only)
+# 2 = DEL_LITE (less deletions)
+# 3 = INS_LITE (less insertions)
+# 4 = SUB_LITE (less substitutions)
+Mutation_Expression_Type = 0
+
+
+# ==========================================
+# Collision Test Configuration
+# ==========================================
+
+[Collision_Test_Configuration]
+
+# AND Parameter Sweep (B: number of concatenated hash codes)
+Coll_Num_Hashes_To_And_Sweep_Start = 1
+Coll_Num_Hashes_To_And_Sweep_End = 2
+
+# OR Parameter Sweep (R: number of hash tables)
+Coll_Num_Hashes_To_Or_Sweep_Start = 1
+Coll_Num_Hashes_To_Or_Sweep_End = 3
+
+
+# ==========================================
+# Similarity Search Test Configuration
+# ==========================================
+
+[Similarity_Search_Test_Configuration]
+
+# Database and Query Configuration
+Total_Sequences_In_Database_To_Search_From = 50000
+Total_Query_Sequences_To_Search = 2000
+
+# Statistical Averaging
+Number_of_Runs_to_get_Average = 2
+
+# AND and OR Parameter Sweep
+SimSearch_Num_Hashes_To_And_Sweep_Start = 1
+SimSearch_Num_Hashes_To_And_Sweep_End = 2
+SimSearch_Num_Hashes_To_Or_Sweep_Start = 1
+SimSearch_Num_Hashes_To_Or_Sweep_End = 3
+
+# Similarity threshold for neighbor classification
+# Sequences with similarity < threshold are considered non-neighbors
+Similarity_Threshold = 0.95
+
+
+# ==========================================
+# Common Configuration
+# ==========================================
+
+[Common_Configuration]
+
+Sequence_Length = 45
+
+# Base Distribution for Nucleotide Generation
+# true = Uniform distribution across {A, C, G, T}
+# false = Use categorical distribution (see below)
+are_Bases_Drawn_From_Uniform_Distribution = true
+
+# Categorical Distribution Probabilities
+# Used only when are_Bases_Drawn_From_Uniform_Distribution = false
+# Probabilities for {A, C, G, T} - must sum to 1.0
+Categorical_Distribution_Probabilities = [0.20, 0.20, 0.35, 0.25]
+
+# There are three speed levels which depends on the hash computation time. 
+# There are very_slow, slow, and default. 
+# Increase any of the values will increase the runtime of the tests. 
+
+very_Slow_NAggCases	= 200000
+very_Slow_NSeq		= 2000
+very_Slow_NHashes	= 2000
+
+Slow_NAggCases	= 200000
+Slow_NSeq		= 5000
+Slow_NHashes	= 2000
+
+NAggCases		= 200000
+NSeq 			= 5000
+NHashes 		= 2000
+
+
+

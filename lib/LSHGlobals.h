@@ -32,8 +32,7 @@ extern uint32_t g_NAggCases;
 extern uint32_t g_NSeq;
 extern uint32_t g_NHashes;
 
-extern uint32_t g_ShortSequenceLength;
-extern uint32_t g_LongSequenceLength;
+extern uint32_t g_SequenceLength;
 
 extern uint32_t g_start_B;
 extern uint32_t g_start_R;
@@ -47,7 +46,6 @@ extern std::vector<uint32_t> g_tokenLengths_array;
 extern uint32_t g_NAggCasesApproxNNTest;
 extern uint32_t g_Nseq_in_Database;
 extern uint32_t g_numQueriesForApproxNNTest;
-extern uint32_t g_sequenceLengthForApproxNNTest;
 
 extern uint32_t g_avgRunsForApproxNN;
 extern uint32_t g_ANN_start_B;
@@ -77,7 +75,7 @@ extern const uint32_t g_bincount_full;
 
 
 extern  uint32_t g_mutation_model; // 0: Simple SNP only, 1: Geometric Mutator
-extern const uint32_t g_mutation_expression_type;
+extern  uint32_t g_mutation_expression_type;
 
 
 

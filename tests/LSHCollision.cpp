@@ -621,15 +621,7 @@ bool LSHCollisionTest( const HashInfo * hinfo, flags_t flags) {
 		throw std::runtime_error("Error: Could not open output file");
 	}
 
-	uint32_t sequenceLength;
-
-	if(hinfo->onlyShortSequenceLength()){
-		printf("Hash %s is marked for only Short Sequence Length.\n", hinfo->name);
-		sequenceLength = g_ShortSequenceLength;
-	}
-	else{
-		sequenceLength = g_LongSequenceLength;
-	}
+	uint32_t sequenceLength = g_SequenceLength;
 
 	SeedGenerator seedGen(g_GoldenRatio ^ std::chrono::system_clock::now().time_since_epoch().count());
 

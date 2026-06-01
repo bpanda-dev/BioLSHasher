@@ -171,7 +171,7 @@ static void MyHash( const void * in, const size_t len, const seed_t seed, void *
 | `FLAG_HASH_LOCALITY_SENSITIVE`           | Your hash is an LSH function                          | HASH      |
 | `FLAG_IMPL_SLOW`                         | Hash is computationally expensive                     | IMPL      |
 | `FLAG_IMPL_VERY_SLOW`                    | Very slow (reduces LSH test parameters automatically) | IMPL      |
-| `FLAG_IMPL_SMALL_SEQUENCE_LENGTH`        | Uses small sequences (40 bases instead of 512)        | IMPL      |
+<!-- | `FLAG_IMPL_SMALL_SEQUENCE_LENGTH`        | Uses small sequences (40 bases instead of 512)        | IMPL      | -->
 
 - **IMPL flags** are for controlling **test execution behaviour** : they tell the testing module how to adjust parameters (e.g., fewer iterations, shorter sequences) based on the computational cost of your hash implementation. They do not affect hash semantics.
 - **HASH flags** are for declaring the **mathematical properties** of your hash function. They tell the testing module whether the hash function is an LSH candidate or not.
@@ -285,18 +285,6 @@ This helps you select the optimal `(b, r)` parameters for your application by di
 :5: b, r, Avg_Recall, Avg_Precision, Avg_FPR, Avg_F1_Score   (column headers)
 :6: <one data row per (b,r) pair>
 ```
-
-**Configuration** (all in [`lib/LSHGlobals.cpp`](lib/LSHGlobals.cpp)):
-
-| Variable                       | Description                        | Default |
-| ------------------------------ | ---------------------------------- |---------|
-| `g_ANN_start_B` / `g_ANN_MAX_B` | Range of `b` (hashes per table)  | 1–2     |
-| `g_ANN_start_R` / `g_ANN_MAX_R` | Range of `r` (number of tables)  | 1–3     |
-| `g_avgRunsForApproxNN`          | Independent runs to average over   | 5       |
-| `g_sequenceLengthForApproxNNTest`| Length of reference/query sequences | 45      |
-| `g_Nseq_in_Database`           | Number of reference sequences      | 10000   |
-| `g_numQueriesForApproxNNTest`  | Number of query sequences          | 100     |
-
 --->
 
 > **Note**: Each run **appends** to the CSV if it already exists, so you can accumulate results across multiple token lengths or configurations.
