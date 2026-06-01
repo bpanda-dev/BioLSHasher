@@ -8,49 +8,44 @@ if we want to test different number of signatures in Minhash or other LSH functi
 
 //---- Variables used across tests which can be defined by user ---//
 
-uint32_t g_SequenceLength = 50;
+uint32_t g_SequenceLength;
 
+uint32_t g_verySlowNAggCases;
+uint32_t g_verySlowNSeq;
+uint32_t g_verySlowNHashes;
 
-uint32_t g_verySlowNAggCases = 200000;
-uint32_t g_verySlowNSeq = 2000;
-uint32_t g_verySlowNHashes = 2000;
+uint32_t g_SlowNAggCases;
+uint32_t g_SlowNSeq;
+uint32_t g_SlowNHashes;
 
-uint32_t g_SlowNAggCases = 200000;
-uint32_t g_SlowNSeq = 5000;
-uint32_t g_SlowNHashes = 2000;
+uint32_t g_NAggCases;
+uint32_t g_NSeq;
+uint32_t g_NHashes;
 
-uint32_t g_NAggCases = 200000;
-uint32_t g_NSeq = 5000;
-uint32_t g_NHashes = 2000;
-
-uint32_t g_start_B = 1;
-uint32_t g_start_R = 1;
-uint32_t g_MAX_B = 3;
-uint32_t g_MAX_R = 3;
+uint32_t g_start_B;
+uint32_t g_start_R;
+uint32_t g_MAX_B;
+uint32_t g_MAX_R;
 
 double g_simThresholdForCollTest = 0.95; // The only purpose is for printing highly similar sequences to output file for debug.
 
 
-bool g_isBasesDrawnFromUniformDistribution = true;
-
-
-std::vector<uint32_t> g_tokenLengths_array = {13}; //{4 ,7, 13, 21, 31, 33};
+bool g_areBasesDrawnFromUniformDistribution;
 
 //---------------------------------------------------------------------------------------
-uint32_t g_NAggCasesApproxNNTest = 100000;
-uint32_t g_Nseq_in_Database = 50000; // Number of sequences in the reference database for the Approx Nearest Neighbour test. Adjust as needed.
-uint32_t g_numQueriesForApproxNNTest = 2000; // Number of query sequences to generate for the Approx Nearest Neighbour test. Adjust as needed.
+uint32_t g_Nseq_in_Database; // Number of sequences in the reference database for the Approx Nearest Neighbour test. Adjust as needed.
+uint32_t g_numQueriesForApproxNNTest; // Number of query sequences to generate for the Approx Nearest Neighbour test. Adjust as needed.
 
-uint32_t g_avgRunsForApproxNN = 3;
+uint32_t g_avgRunsForApproxNN;
 
 std::vector<double> g_cValuesApproxNNTest = {1}; //{0.5, 0.6, 0.7, 0.8, 0.9, 0.95}; // c-ANN approximation factors to sweep. Each c < 1 defines the boundary as c * target_sim_low.
 
-uint32_t g_ANN_start_B = 1; // Starting value of b (hashes per table) for the Approx Nearest Neighbour test. Adjust as needed.
-uint32_t g_ANN_start_R = 1; // Starting value of r (number of tables) for the Approx Nearest Neighbour test. Adjust as needed.
-uint32_t g_ANN_MAX_B = 2; // Maximum value of b (hashes per table) to test in the Approx Nearest Neighbour test. Adjust as needed.
-uint32_t g_ANN_MAX_R = 2; // Maximum value of r (number of tables) to test in the Approx Nearest Neighbour test. Adjust as needed.
+uint32_t g_ANN_start_B; // Starting value of b (hashes per table) for the Approx Nearest Neighbour test. Adjust as needed.
+uint32_t g_ANN_start_R; // Starting value of r (number of tables) for the Approx Nearest Neighbour test. Adjust as needed.
+uint32_t g_ANN_MAX_B; // Maximum value of b (hashes per table) to test in the Approx Nearest Neighbour test. Adjust as needed.
+uint32_t g_ANN_MAX_R; // Maximum value of r (number of tables) to test in the Approx Nearest Neighbour test. Adjust as needed.
 
-double g_simThresholdForApproxNNTest = 0.95; // Similarity threshold for Approx Nearest Neighbour test. Adjust as needed.
+double g_simThresholdForApproxNNTest; // Similarity threshold for Approx Nearest Neighbour test. Adjust as needed.
 
 //---------------------------------------------------------------------------------------
 
@@ -68,8 +63,8 @@ bool g_IsTestActive = false;     // Whether test is currently running
 const uint32_t g_GoldenRatio = 0x9e3779b1;	
 
 // Change to MUTATION_MODEL_SIMPLE_SNP_ONLY (0) or MUTATION_MODEL_GEOMETRIC_MUTATOR (1)
-uint32_t g_mutation_model = MUTATION_MODEL_SIMPLE_SNP_ONLY; //MUTATION_MODEL_SIMPLE_SNP_ONLY; //MUTATION_MODEL_GEOMETRIC_MUTATOR; //MUTATION_MODEL_SIMPLE_SNP_ONLY;//MUTATION_MODEL_GEOMETRIC_MUTATOR; // MUTATION_MODEL_SIMPLE_SNP_ONLY; // 0: Simple SNP only, 1: Geometric Mutator   // Change the mutation model here.
-uint32_t g_mutation_expression_type = MUTATION_EXPRESSION_BALANCED;//MUTATION_EXPRESSION_BALANCED;	// Change the mutation expression type here as needed.
+uint32_t g_mutation_model; //MUTATION_MODEL_SIMPLE_SNP_ONLY; //MUTATION_MODEL_GEOMETRIC_MUTATOR; //MUTATION_MODEL_SIMPLE_SNP_ONLY;//MUTATION_MODEL_GEOMETRIC_MUTATOR; // MUTATION_MODEL_SIMPLE_SNP_ONLY; // 0: Simple SNP only, 1: Geometric Mutator   // Change the mutation model here.
+uint32_t g_mutation_expression_type;//MUTATION_EXPRESSION_BALANCED;	// Change the mutation expression type here as needed.
 
 // // Setter functions (called by LSHCollision test)
 // void SetTokenLength(uint32_t length) {

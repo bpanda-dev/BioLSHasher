@@ -45,7 +45,7 @@ struct BioLSHasherConfig {
     uint32_t SimSearch_Num_Hashes_To_Or_Sweep_Start;
     uint32_t SimSearch_Num_Hashes_To_Or_Sweep_End;
 
-    float Similarity_Threshold;
+    double Similarity_Threshold;
 
     bool are_Bases_Drawn_From_Uniform_Distribution;
     std::vector<double> Categorical_Distribution_Probabilities;
@@ -92,12 +92,17 @@ void load_config(const std::string& filepath) {
         configuration.Mutation_Model = config["Mutation_Model_Configuration"]["Mutation_Model"].value_or(1u);
         configuration.Mutation_Expression_Type = config["Mutation_Model_Configuration"]["Mutation_Expression_Type"].value_or(0u);
         
-        configuration.Sequence_Length = config["Common_Configuration"]["Sequence_Length"].value_or(50u);
-        
         configuration.Coll_Num_Hashes_To_And_Sweep_Start = config["Collision_Test_Configuration"]["Coll_Num_Hashes_To_And_Sweep_Start"].value_or(1u);
         configuration.Coll_Num_Hashes_To_And_Sweep_End = config["Collision_Test_Configuration"]["Coll_Num_Hashes_To_And_Sweep_End"].value_or(1u);
         configuration.Coll_Num_Hashes_To_Or_Sweep_Start = config["Collision_Test_Configuration"]["Coll_Num_Hashes_To_Or_Sweep_Start"].value_or(1u);
         configuration.Coll_Num_Hashes_To_Or_Sweep_End = config["Collision_Test_Configuration"]["Coll_Num_Hashes_To_Or_Sweep_End"].value_or(1u);
+        
+        configuration.very_Slow_NSeq = config["Collision_Test_Configuration"]["very_Slow_NSeq"].value_or(1000u);
+        configuration.very_Slow_NHashes = config["Collision_Test_Configuration"]["very_Slow_NHashes"].value_or(1000u);
+        configuration.Slow_NSeq = config["Collision_Test_Configuration"]["Slow_NSeq"].value_or(3000u);
+        configuration.Slow_NHashes = config["Collision_Test_Configuration"]["Slow_NHashes"].value_or(1500u);
+        configuration.NSeq = config["Collision_Test_Configuration"]["NSeq"].value_or(5000u);
+        configuration.NHashes = config["Collision_Test_Configuration"]["NHashes"].value_or(2000u);
         
         configuration.Total_Sequences_In_Database_To_Search_From = config["Similarity_Search_Test_Configuration"]["Total_Sequences_In_Database_To_Search_From"].value_or(50000u);
         configuration.Total_Query_Sequences_To_Search = config["Similarity_Search_Test_Configuration"]["Total_Query_Sequences_To_Search"].value_or(2000u);
@@ -106,22 +111,16 @@ void load_config(const std::string& filepath) {
         configuration.SimSearch_Num_Hashes_To_And_Sweep_End = config["Similarity_Search_Test_Configuration"]["SimSearch_Num_Hashes_To_And_Sweep_End"].value_or(1u);
         configuration.SimSearch_Num_Hashes_To_Or_Sweep_Start = config["Similarity_Search_Test_Configuration"]["SimSearch_Num_Hashes_To_Or_Sweep_Start"].value_or(1u);
         configuration.SimSearch_Num_Hashes_To_Or_Sweep_End = config["Similarity_Search_Test_Configuration"]["SimSearch_Num_Hashes_To_Or_Sweep_End"].value_or(1u);
-        configuration.Similarity_Threshold = config["Similarity_Search_Test_Configuration"]["Similarity_Threshold"].value_or(0.95f);
+        configuration.Similarity_Threshold = config["Similarity_Search_Test_Configuration"]["Similarity_Threshold"].value_or(0.95);
         configuration.are_Bases_Drawn_From_Uniform_Distribution = config["Common_Configuration"]["are_Bases_Drawn_From_Uniform_Distribution"].value_or(true);
         configuration.Categorical_Distribution_Probabilities = extracted_categorical_probs;
 
+        configuration.Sequence_Length = config["Common_Configuration"]["Sequence_Length"].value_or(50u);
+
         configuration.very_Slow_NAggCases = config["Common_Configuration"]["very_Slow_NAggCases"].value_or(200000u);
-        configuration.very_Slow_NSeq = config["Common_Configuration"]["very_Slow_NSeq"].value_or(1000u);
-        configuration.very_Slow_NHashes = config["Common_Configuration"]["very_Slow_NHashes"].value_or(1000u);
-        
         configuration.Slow_NAggCases = config["Common_Configuration"]["Slow_NAggCases"].value_or(200000u);
-        configuration.Slow_NSeq = config["Common_Configuration"]["Slow_NSeq"].value_or(3000u);
-        configuration.Slow_NHashes = config["Common_Configuration"]["Slow_NHashes"].value_or(1500u);
-
         configuration.NAggCases = config["Common_Configuration"]["NAggCases"].value_or(200000u);
-        configuration.NSeq = config["Common_Configuration"]["NSeq"].value_or(5000u);
-        configuration.NHashes = config["Common_Configuration"]["NHashes"].value_or(2000u);
-
+        
         g_mutation_model = configuration.Mutation_Model;
         g_mutation_expression_type = configuration.Mutation_Expression_Type;
         g_SequenceLength = configuration.Sequence_Length;
@@ -139,7 +138,7 @@ void load_config(const std::string& filepath) {
         g_ANN_start_R = configuration.SimSearch_Num_Hashes_To_Or_Sweep_Start;
         g_ANN_MAX_R = configuration.SimSearch_Num_Hashes_To_Or_Sweep_End;
         g_simThresholdForApproxNNTest = configuration.Similarity_Threshold;
-        g_isBasesDrawnFromUniformDistribution = configuration.are_Bases_Drawn_From_Uniform_Distribution;
+        g_areBasesDrawnFromUniformDistribution = configuration.are_Bases_Drawn_From_Uniform_Distribution;
         // TODO:aDD THE CATEGORICAL DISTRIBUTION PROBABILITIES TO THE GLOBAL VARIABLE
 
         g_verySlowNAggCases = configuration.very_Slow_NAggCases;
@@ -277,25 +276,25 @@ static void examplehash_initialisation() {
         g_MAX_R = 3;
 
         //---------------------------------------------------------------------------------------
-        uint32_t g_NAggCasesApproxNNTest = 50000;
-        uint32_t g_Nseq_in_Database = 50000; // Number of sequences in the reference database for the Approx Nearest Neighbour test. Adjust as needed.
-        uint32_t g_numQueriesForApproxNNTest = 1000; // Number of query sequences to generate for the Approx Nearest Neighbour test. Adjust as needed.
+        
+        g_Nseq_in_Database = 50000; // Number of sequences in the reference database for the Approx Nearest Neighbour test. Adjust as needed.
+        g_numQueriesForApproxNNTest = 1000; // Number of query sequences to generate for the Approx Nearest Neighbour test. Adjust as needed.
 
-        uint32_t g_avgRunsForApproxNN = 2;
+        g_avgRunsForApproxNN = 2;
 
-        std::vector<double> g_cValuesApproxNNTest = {1}; //{0.5, 0.6, 0.7, 0.8, 0.9, 0.95}; // c-ANN approximation factors to sweep. Each c < 1 defines the boundary as c * target_sim_low.
+        g_cValuesApproxNNTest = {1}; //{0.5, 0.6, 0.7, 0.8, 0.9, 0.95}; // c-ANN approximation factors to sweep. Each c < 1 defines the boundary as c * target_sim_low.
 
-        uint32_t g_ANN_start_B = 1; // Starting value of b (hashes per table) for the Approx Nearest Neighbour test. Adjust as needed.
-        uint32_t g_ANN_start_R = 1; // Starting value of r (number of tables) for the Approx Nearest Neighbour test. Adjust as needed.
-        uint32_t g_ANN_MAX_B = 2; // Maximum value of b (hashes per table) to test in the Approx Nearest Neighbour test. Adjust as needed.
-        uint32_t g_ANN_MAX_R = 3; // Maximum value of r (number of tables) to test in the Approx Nearest Neighbour test. Adjust as needed.
+        g_ANN_start_B = 1; // Starting value of b (hashes per table) for the Approx Nearest Neighbour test. Adjust as needed.
+        g_ANN_start_R = 1; // Starting value of r (number of tables) for the Approx Nearest Neighbour test. Adjust as needed.
+        g_ANN_MAX_B = 2; // Maximum value of b (hashes per table) to test in the Approx Nearest Neighbour test. Adjust as needed.
+        g_ANN_MAX_R = 3; // Maximum value of r (number of tables) to test in the Approx Nearest Neighbour test. Adjust as needed.
 
-        double g_simThresholdForApproxNNTest = 0.95; // Similarity threshold for Approx Nearest Neighbour test. Adjust as needed.
+        g_simThresholdForApproxNNTest = 0.95; // Similarity threshold for Approx Nearest Neighbour test. Adjust as needed.
 
         //---------------------------------------------------------------------------------------
 
         // Global variables for runtime communication
-        const uint32_t g_bincount_full = 1000;
+        // g_bincount_full = 1000;
 
         initialized = true;
     }

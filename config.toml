@@ -13,7 +13,7 @@
 # Mutation Model Selection
 # 0 = SIMPLE_SNP_ONLY (substitutions only)
 # 1 = GEOMETRIC_MUTATOR (substitutions + indels)
-Mutation_Model = 1
+Mutation_Model = 0
 
 # Mutation Expression Type
 # 0 = BALANCED (equal SNP/ins/del occurrence probabilities)
@@ -37,6 +37,19 @@ Coll_Num_Hashes_To_And_Sweep_End = 2
 # OR Parameter Sweep (R: number of hash tables)
 Coll_Num_Hashes_To_Or_Sweep_Start = 1
 Coll_Num_Hashes_To_Or_Sweep_End = 3
+
+# There are three speed levels which depends on the hash computation time. 
+# There are very_slow, slow, and default. 
+# Increase any of the values will increase the runtime of the tests. 
+very_Slow_NSeq		= 2000
+very_Slow_NHashes	= 2000
+
+Slow_NSeq		= 5000
+Slow_NHashes	= 2000
+
+NSeq 			= 5000
+NHashes 		= 2000
+
 
 
 # ==========================================
@@ -84,18 +97,6 @@ Categorical_Distribution_Probabilities = [0.20, 0.20, 0.35, 0.25]
 # There are three speed levels which depends on the hash computation time. 
 # There are very_slow, slow, and default. 
 # Increase any of the values will increase the runtime of the tests. 
-
 very_Slow_NAggCases	= 200000
-very_Slow_NSeq		= 2000
-very_Slow_NHashes	= 2000
-
 Slow_NAggCases	= 200000
-Slow_NSeq		= 5000
-Slow_NHashes	= 2000
-
 NAggCases		= 200000
-NSeq 			= 5000
-NHashes 		= 2000
-
-
-

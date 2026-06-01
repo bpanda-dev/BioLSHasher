@@ -73,7 +73,7 @@ struct common_params_struct{
 	uint32_t seqLen;
 	seed_t DataGenSeed;
 	seed_t DataMutateSeed;
-	bool isBasesDrawnFromUniformDist;
+	bool areBasesDrawnFromUniformDist;
 };
 
 static void run_progress_bar(std::atomic<uint32_t>& counter, uint32_t total);
@@ -149,7 +149,7 @@ static bool LSHCollisionTestInnerInnerParallel(const HashInfo * hinfo, uint32_t 
 
 	SequenceRecordsWithMetadataStruct sequenceRecordsforTest;
 	sequenceRecordsforTest.OriginalSequenceLength = common_params.seqLen;
-	sequenceRecordsforTest.isBasesDrawnFromUniformDist = common_params.isBasesDrawnFromUniformDist;
+	sequenceRecordsforTest.areBasesDrawnFromUniformDist = common_params.areBasesDrawnFromUniformDist;
 	sequenceRecordsforTest.DataGenSeed = seedGen.nextSeed();	// A seed that is different from the seed that is used in AGG step.
 	sequenceRecordsforTest.DataMutateSeed = seedGen.nextSeed();
 	sequenceRecordsforTest.KeyCount = N_seq;
@@ -350,7 +350,7 @@ static sim_bins_struct LSHCollisionTestInnerAgg(const HashInfo * hinfo, uint32_t
 	SequenceRecordsWithMetadataStruct sequenceRecordsForAgg;
 
 	sequenceRecordsForAgg.OriginalSequenceLength = common_params.seqLen;
-	sequenceRecordsForAgg.isBasesDrawnFromUniformDist = common_params.isBasesDrawnFromUniformDist;
+	sequenceRecordsForAgg.areBasesDrawnFromUniformDist = common_params.areBasesDrawnFromUniformDist;
 	sequenceRecordsForAgg.DataGenSeed = common_params.DataGenSeed;
 	sequenceRecordsForAgg.DataMutateSeed = common_params.DataMutateSeed;
 	sequenceRecordsForAgg.KeyCount = N_agg;
@@ -548,7 +548,7 @@ static bool LSHCollisionTestInner( const HashInfo * hinfo, const uint32_t seqLen
 	common_params.seqLen = seqLen;
 	common_params.DataGenSeed = DataGenSeed;
 	common_params.DataMutateSeed = DataMutateSeed;
-	common_params.isBasesDrawnFromUniformDist = g_isBasesDrawnFromUniformDistribution;
+	common_params.areBasesDrawnFromUniformDist = g_areBasesDrawnFromUniformDistribution;
 
 	uint32_t N_agg = 0;
 

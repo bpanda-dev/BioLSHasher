@@ -212,7 +212,7 @@ SequenceDataGenerator::SequenceDataGenerator(SequenceRecordsWithMetadataStruct *
 	// Initialise seed and reserve memory.
     std::mt19937 rng(sequenceRecordsWithMetadata->DataGenSeed);
 
-	if(sequenceRecordsWithMetadata->isBasesDrawnFromUniformDist == false){
+	if(sequenceRecordsWithMetadata->areBasesDrawnFromUniformDist == false){
 		// If not drawn from uniform distribution, we can set custom base percentages here.
 		sequenceRecordsWithMetadata->A_percentage = 1; //0.50;
 		sequenceRecordsWithMetadata->C_percentage = 0.00;
@@ -242,7 +242,7 @@ SequenceDataGenerator::SequenceDataGenerator(SequenceRecordsWithMetadataStruct *
 		memcpy(&rand_data[i], &val, total_bases - i);
 	}
 	
-	if(sequenceRecordsWithMetadata->isBasesDrawnFromUniformDist == 1){
+	if(sequenceRecordsWithMetadata->areBasesDrawnFromUniformDist == 1){
 		for (uint32_t rec_idx = 0; rec_idx < sequenceRecordsWithMetadata->KeyCount; rec_idx++) {
 			auto& record = sequenceRecordsWithMetadata->Records[rec_idx];
 

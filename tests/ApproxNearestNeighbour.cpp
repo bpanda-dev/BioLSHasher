@@ -219,7 +219,7 @@ bool LSHApproxNearestNeighbourTest(const HashInfo *hinfo, flags_t flags) {
 		throw std::runtime_error("Error: Could not open output file");
 	}
 
-    uint32_t sequenceLength = g_SequenceLength;
+    const uint32_t sequenceLength = g_SequenceLength;
 
     SetIsTestActive(true);
     SeedGenerator seedGen(g_GoldenRatio ^ std::chrono::system_clock::now().time_since_epoch().count());
@@ -229,7 +229,7 @@ bool LSHApproxNearestNeighbourTest(const HashInfo *hinfo, flags_t flags) {
     SequenceRecordsWithMetadataStruct ReferenceSequenceRecords;
     ReferenceSequenceRecords.KeyCount = g_Nseq_in_Database;
     ReferenceSequenceRecords.OriginalSequenceLength = sequenceLength;
-    ReferenceSequenceRecords.isBasesDrawnFromUniformDist = true;
+    ReferenceSequenceRecords.areBasesDrawnFromUniformDist = true;
     ReferenceSequenceRecords.DataGenSeed = seedGen.nextSeed();
     ReferenceSequenceRecords.DataMutateSeed = 0; // not applicable
 
@@ -251,7 +251,7 @@ bool LSHApproxNearestNeighbourTest(const HashInfo *hinfo, flags_t flags) {
     SequenceRecordsWithMetadataStruct QuerySequenceRecords;
     QuerySequenceRecords.KeyCount = numQueries;
     QuerySequenceRecords.OriginalSequenceLength = sequenceLength; // Sampled Queries which have not yet mutated are same length as reference.
-    QuerySequenceRecords.isBasesDrawnFromUniformDist = g_isBasesDrawnFromUniformDistribution;
+    QuerySequenceRecords.areBasesDrawnFromUniformDist = g_areBasesDrawnFromUniformDistribution;
     QuerySequenceRecords.DataGenSeed = 0; // Not applicable, as we are sampling from reference sequences rather than generating new random sequences.
     QuerySequenceRecords.DataMutateSeed = seedGen.nextSeed();
 
@@ -270,10 +270,24 @@ bool LSHApproxNearestNeighbourTest(const HashInfo *hinfo, flags_t flags) {
     // -----------------------------------------------------------------------------------------------------
     // 3. Perform aggegration to get the bins from simx% to simy% similarity (note: simy>simx).
 
+    uint32_t N_agg = 0;
+    //--------------------------------------------//
+	if(hinfo->isVerySlow()){
+		N_agg = g_verySlowNAggCases;
+	}
+	else if (hinfo->isSlow()) {
+		N_agg = g_SlowNAggCases;
+	}
+	else{
+		N_agg = g_NAggCases;
+	}
+
+    printf("Performing aggregation step to get similarity bins for similarity range [%0.2f, %0.2f]. Number of sequences to aggregate: %u\n", g_simThresholdForApproxNNTest, 1.0, N_agg);
+    
     SequenceRecordsWithMetadataStruct AggSequenceRecord;
-    AggSequenceRecord.KeyCount = g_NAggCasesApproxNNTest;
+    AggSequenceRecord.KeyCount = N_agg;
     AggSequenceRecord.OriginalSequenceLength = sequenceLength; // Sampled Queries which have not yet mutated are same length as reference.
-    AggSequenceRecord.isBasesDrawnFromUniformDist = g_isBasesDrawnFromUniformDistribution;
+    AggSequenceRecord.areBasesDrawnFromUniformDist = g_areBasesDrawnFromUniformDistribution;
     AggSequenceRecord.DataGenSeed = 0; // Not applicable, as we are sampling from reference sequences rather than generating new random sequences.
     AggSequenceRecord.DataMutateSeed = seedGen.nextSeed();
 

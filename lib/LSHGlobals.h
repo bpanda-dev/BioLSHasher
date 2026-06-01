@@ -17,7 +17,9 @@
 #define MUTATION_EXPRESSION_SUB_LITE 4
 
 
-extern bool g_isBasesDrawnFromUniformDistribution;
+extern bool g_areBasesDrawnFromUniformDistribution;
+
+extern uint32_t g_SequenceLength;
 
 
 extern uint32_t g_verySlowNAggCases;
@@ -32,7 +34,7 @@ extern uint32_t g_NAggCases;
 extern uint32_t g_NSeq;
 extern uint32_t g_NHashes;
 
-extern uint32_t g_SequenceLength;
+
 
 extern uint32_t g_start_B;
 extern uint32_t g_start_R;
@@ -41,9 +43,6 @@ extern uint32_t g_MAX_R;
 
 extern double g_simThresholdForCollTest;
 
-extern std::vector<uint32_t> g_tokenLengths_array;
-
-extern uint32_t g_NAggCasesApproxNNTest;
 extern uint32_t g_Nseq_in_Database;
 extern uint32_t g_numQueriesForApproxNNTest;
 

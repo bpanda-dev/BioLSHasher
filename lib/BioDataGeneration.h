@@ -97,7 +97,7 @@ struct SequenceRecordsWithMetadataStruct{
 	uint32_t HashCount;		// Number of hash functions to be used for LSH
 
 	// Content of sequences
-	bool isBasesDrawnFromUniformDist;
+	bool areBasesDrawnFromUniformDist;
 	double A_percentage;	// Percentage of A bases in the original sequence
 	double C_percentage;	// Percentage of C bases in the original sequence
 	double G_percentage;	// Percentage of G bases in the original sequence
