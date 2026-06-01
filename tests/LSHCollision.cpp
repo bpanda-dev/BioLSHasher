@@ -299,6 +299,7 @@ static bool LSHCollisionTestInnerInnerParallel(const HashInfo * hinfo, uint32_t 
 				printf("Starting collision computation with %u threads...\n", g_NCPU);
 				std::vector<std::thread> threads(g_NCPU);
 				int block_size = N_seq / g_NCPU;
+				// int block_size = std::max(1, N_seq / (g_NCPU * 8));  // 8x finer granularity
 				printf("Block size per thread: %d\n", block_size);
 
 				auto start_par = std::chrono::high_resolution_clock::now();

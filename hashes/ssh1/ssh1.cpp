@@ -19,7 +19,7 @@
 #define ALPHABETSIZE 4
 const char ALPHABET[ALPHABETSIZE] = {'A', 'C', 'G', 'T'};
 
-#define SUBSEQUENCE_LENGTH 15
+#define SUBSEQUENCE_LENGTH 25
 #define D_PARAM 1
 
 #define MAXK 100

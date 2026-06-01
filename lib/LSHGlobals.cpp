@@ -25,8 +25,8 @@ uint32_t g_LongSequenceLength = 100;
 
 uint32_t g_start_B = 1;
 uint32_t g_start_R = 1;
-uint32_t g_MAX_B = 1;
-uint32_t g_MAX_R = 1;
+uint32_t g_MAX_B = 3;
+uint32_t g_MAX_R = 3;
 
 double g_simThresholdForCollTest = 0.95; // The only purpose is for printing highly similar sequences to output file for debug.
 
