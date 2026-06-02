@@ -380,8 +380,8 @@ def main():
     if collision_df is not None:
         sim_metric = collision_df['DistanceMetric'].iloc[0] if 'DistanceMetric' in collision_df.columns else ""
         replacements["show_collision"] = "display: block;"
-        replacements["scatter_div"]    = plot_scatter(collision_df, sim_metric).to_html(full_html=False, include_plotlyjs=_plotlyjs())
         replacements["binned_div"]     = plot_binned_average(collision_df, sim_metric).to_html(full_html=False, include_plotlyjs=_plotlyjs())
+        replacements["scatter_div"]    = plot_scatter(collision_df, sim_metric).to_html(full_html=False, include_plotlyjs=_plotlyjs())
         replacements["box_div"]        = plot_box_plot(collision_df, sim_metric=sim_metric).to_html(full_html=False, include_plotlyjs=_plotlyjs())
 
     if ann_df is not None:
