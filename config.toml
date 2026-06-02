@@ -36,7 +36,7 @@ Coll_Num_Hashes_To_And_Sweep_End = 2
 
 # OR Parameter Sweep (R: number of hash tables)
 Coll_Num_Hashes_To_Or_Sweep_Start = 1
-Coll_Num_Hashes_To_Or_Sweep_End = 3
+Coll_Num_Hashes_To_Or_Sweep_End = 2
 
 # There are three speed levels which depends on the hash computation time. 
 # There are very_slow, slow, and default. 
