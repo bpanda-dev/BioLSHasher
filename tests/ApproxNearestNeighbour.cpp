@@ -451,6 +451,8 @@ bool LSHApproxNearestNeighbourTest(const HashInfo *hinfo, flags_t flags) {
     };
 
     auto gt_worker = [&](uint32_t start, uint32_t end) {
+        uint32_t local_count = 0;
+        constexpr uint32_t batch_size = 10;
         for (uint32_t q_idx = start; q_idx < end; q_idx++) {
             const std::string &querySeq = QuerySequenceRecords.Records[q_idx].SeqASCIIMut;
             const uint32_t mut_len = QuerySequenceRecords.Records[q_idx].MutatedLength;
@@ -471,7 +473,15 @@ bool LSHApproxNearestNeighbourTest(const HashInfo *hinfo, flags_t flags) {
             //               return a.similarity > b.similarity;
             //           });
 
-            gt_completed.fetch_add(1, std::memory_order_relaxed);
+            local_count++;
+            if (local_count >= batch_size) {
+                gt_completed.fetch_add(local_count, std::memory_order_relaxed);
+                local_count = 0;
+            }
+            // gt_completed.fetch_add(1, std::memory_order_relaxed);
+        }
+        if (local_count > 0) {
+            gt_completed.fetch_add(local_count, std::memory_order_relaxed);
         }
     };
 
@@ -651,8 +661,11 @@ bool LSHApproxNearestNeighbourTest(const HashInfo *hinfo, flags_t flags) {
             //     }
             // };
 
-            // This new method will NOT WORK with multiple c values. only c=1.0.
+            // IMP: This new method will NOT WORK with multiple c values. only c=1.0.
             auto eval_worker = [&](uint32_t start, uint32_t end) {
+                uint32_t local_count = 0;
+                constexpr uint32_t batch_size = 10;
+
                 for (uint32_t q_idx = start; q_idx < end; q_idx++) {
                     if (valid_Q[q_idx]) {
                         const std::string &querySeq = QuerySequenceRecords.Records[q_idx].SeqASCIIMut;
@@ -708,7 +721,18 @@ bool LSHApproxNearestNeighbourTest(const HashInfo *hinfo, flags_t flags) {
                             fpr_arr[c_idx][q_idx]       = fpr;
                         }
                     }
-                    eval_completed.fetch_add(1, std::memory_order_relaxed);
+
+                    local_count++;
+                    if (local_count >= batch_size) {
+                        eval_completed.fetch_add(local_count, std::memory_order_relaxed);
+                        local_count = 0;
+                    }
+
+                    // eval_completed.fetch_add(1, std::memory_order_relaxed);
+                }
+                
+                if (local_count > 0) {
+                    eval_completed.fetch_add(local_count, std::memory_order_relaxed);
                 }
             };
 

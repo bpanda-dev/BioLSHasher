@@ -86,6 +86,10 @@ static void LSHCollisionTestInnerInnerWorker(const HashInfo * hinfo, uint32_t N_
 
 	std::vector<seed_t> andor_seeds = std::vector<seed_t>(and_param*or_param, 0);
 
+	// This is for reducing atomic contention.
+	uint32_t local_count = 0;  // Local counter to reduce atomic operations
+    constexpr uint32_t batch_size = 10;  // Update shared counter every 10 sequences
+
 	for(int rec_idx = start; rec_idx < end; rec_idx++){
 		SequenceRecordUnit &record = sequenceRecordsforTest.Records[rec_idx];
 		uint32_t collision_count = 0;
@@ -135,10 +139,20 @@ static void LSHCollisionTestInnerInnerWorker(const HashInfo * hinfo, uint32_t N_
 		// Compute average and stddev of collisions for this sequence pair.
 		double avg_collision = static_cast<double>(collision_count) / static_cast<double>(N_hash);
 		AverageCollision[rec_idx] = avg_collision;
-
-		// single increment per sequence, not too much atomic contention
-        completed->fetch_add(1, std::memory_order_relaxed);
+		
+		// Batch counter updates to reduce atomic contention
+        local_count++;
+        if (local_count >= batch_size) {
+            completed->fetch_add(local_count, std::memory_order_relaxed);
+            local_count = 0;
+        }
+		// // single increment per sequence, not too much atomic contention
+        // completed->fetch_add(1, std::memory_order_relaxed);
 	}
+	// Flush remaining count at the end
+    if (local_count > 0) {
+        completed->fetch_add(local_count, std::memory_order_relaxed);
+    }
 }
 
 
