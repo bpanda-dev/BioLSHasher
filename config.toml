@@ -13,7 +13,7 @@
 # Mutation Model Selection
 # 0 = SIMPLE_SNP_ONLY (substitutions only)
 # 1 = GEOMETRIC_MUTATOR (substitutions + indels)
-Mutation_Model = 0
+Mutation_Model = 1
 
 # Mutation Expression Type
 # 0 = BALANCED (equal SNP/ins/del occurrence probabilities)
@@ -63,7 +63,7 @@ Total_Sequences_In_Database_To_Search_From = 50000
 Total_Query_Sequences_To_Search = 2000
 
 # Statistical Averaging
-Number_of_Runs_to_get_Average = 2
+Number_of_Runs_to_get_Average = 3
 
 # AND and OR Parameter Sweep
 SimSearch_Num_Hashes_To_And_Sweep_Start = 1
@@ -82,7 +82,7 @@ Similarity_Threshold = 0.95
 
 [Common_Configuration]
 
-Sequence_Length = 45
+Sequence_Length = 50
 
 # Base Distribution for Nucleotide Generation
 # true = Uniform distribution across {A, C, G, T}
@@ -92,7 +92,7 @@ are_Bases_Drawn_From_Uniform_Distribution = true
 # Categorical Distribution Probabilities
 # Used only when are_Bases_Drawn_From_Uniform_Distribution = false
 # Probabilities for {A, C, G, T} - must sum to 1.0
-Categorical_Distribution_Probabilities = [0.20, 0.20, 0.35, 0.25]
+Categorical_Distribution_Probabilities = [0.25, 0.25, 0.25, 0.25]
 
 # There are three speed levels which depends on the hash computation time. 
 # There are very_slow, slow, and default. 

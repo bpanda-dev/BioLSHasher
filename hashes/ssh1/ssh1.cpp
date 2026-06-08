@@ -23,8 +23,6 @@ const char ALPHABET[ALPHABETSIZE] = {'A', 'C', 'G', 'T'};
 #define D_PARAM 1
 
 
-int d_param = 10;
-
 #define MAXK 100
 #define MAXD 100
 
@@ -542,7 +540,7 @@ REGISTER_HASH(SubseqHash_64,
    $.hashfn			 = SubseqHash64,
    $.parameterNames  = {"k", "d"},
    $.parameterDescriptions  = {"Subsequence Length 'k'", "Parameter 'd'"},
-   $.parameterValues = {SUBSEQUENCE_LENGTH, d_param},
+   $.parameterValues = {SUBSEQUENCE_LENGTH, D_PARAM},
    $.similarityfn   = EditSimilarity,
    $.similarity_name = "Edit",
    $.check_equality_fn = check_equality_64

@@ -329,6 +329,7 @@ def finalize_binned_average_plot(
     ax.grid(visible=True, which="both", axis="both", alpha=0.5)
     ax.set_xlabel(similarity_label, fontsize=16)
     ax.set_ylabel('Average Collision Rate per bin', fontsize=16)
+    ax.tick_params(axis='both', labelsize=14)  # Add this line
     ax.legend(fontsize=12)
     ax.figure.tight_layout()
 
