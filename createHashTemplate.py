@@ -9,9 +9,6 @@ import sys
 from datetime import datetime
 
 
-# # Available source status options
-# SRC_STATUS_OPTIONS = ["UNKNOWN","FROZEN", "STABLEISH", "ACTIVE"]
-
 # Available license options
 LICENSE_OPTIONS = {
     "1": ("MIT License", "Licensed under the MIT License."),
@@ -86,7 +83,7 @@ static double JaccardSimilarity(const std::string& seq1, const std::string& seq2
     return static_cast<double>(intersection.size()) / static_cast<double>(union_set.size());
 }
     '''),
-    "Cosine": ("CosineSimilarity", '''
+    "cosine": ("CosineSimilarity", '''
 //------------------------------------------------------------
 // cosine Similarity: dot(freq1, freq2) / (||freq1|| * ||freq2||) over character frequencies
 static double CosineSimilarity(const std::string& seq1, const std::string& seq2, const uint32_t in1_len, const uint32_t in2_len) {
@@ -151,14 +148,6 @@ TEMPLATE_FAMILY_REGISTER = '''
 REGISTER_FAMILY({family_name});
 '''
 
-# TEMPLATE_FAMILY_REGISTER = '''
-# //------------------------------------------------------------
-# REGISTER_FAMILY({family_name},
-#    $.src_url    = "{repo_url}",
-#    $.src_status = HashFamilyInfo::SRC_{src_status}
-#  );
-# '''
-
 TEMPLATE_HASH_REGISTER = '''
 REGISTER_HASH({hash_name}{suffix},
    $.desc               = "{description}{bits_desc}",
@@ -168,6 +157,19 @@ REGISTER_HASH({hash_name}{suffix},
    $.hashfn             = {hash_name}{suffix},
    $.similarity_name    = "{similarity_name}",
    $.similarityfn       = {similarityfn},
+   $.check_equality_fn  = check_equality{suffix}{parameters}
+ );
+'''
+
+TEMPLATE_HASH_REGISTER_HELPER = '''
+REGISTER_HASH({hash_name}{suffix},
+   $.desc               = "{description}{bits_desc}",
+   $.hash_flags         = 0,
+   $.impl_flags         = 0,
+   $.bits               = {bits},
+   $.hashfn             = {hash_name}{suffix},
+   $.similarity_name    = "",
+   $.similarityfn       = nullptr,
    $.check_equality_fn  = check_equality{suffix}{parameters}
  );
 '''
@@ -318,25 +320,6 @@ def validate_family_name(name: str) -> tuple[bool, str]:
     return validate_hash_name(name)
 
 
-def validate_url(url: str) -> tuple[bool, str]:
-    """
-    Validate repository URL.
-    Returns (is_valid, error_message).
-    """
-    if not url:
-        return False, "Repository URL cannot be empty."
-
-    # Basic URL pattern check
-    url_pattern = r'^https?://[^\s<>"{}|\\^`\[\]]+$'
-    if not re.match(url_pattern, url):
-        return False, "Invalid URL format. URL must start with http:// or https://"
-
-    if len(url) > 500:
-        return False, "URL must be 500 characters or less."
-
-    return True, ""
-
-
 def validate_description(desc: str) -> tuple[bool, str]:
     """
     Validate hash description.
@@ -404,37 +387,6 @@ def get_input_with_validation(prompt: str, validator, default: str | None = None
                 return value
             print(f"   Error: {error_msg}")
 
-
-def get_choice_input(prompt: str, options: list, default: str | None = None) -> str:
-    """
-    Get user input from a list of choices.
-    """
-    print(f"\n{prompt}")
-    print("Available options:")
-    for i, opt in enumerate(options, 1):
-        marker = " (default)" if default and opt == default else ""
-        print(f"  {i}. {opt}{marker}")
-
-    while True:
-        if default:
-            user_input = input(f"Enter choice [1-{len(options)}] or press Enter for default: ").strip()
-            if not user_input:
-                return default
-        else:
-            user_input = input(f"Enter choice [1-{len(options)}]: ").strip()
-
-        try:
-            choice_idx = int(user_input) - 1
-            if 0 <= choice_idx < len(options):
-                return options[choice_idx]
-            print(f"   Error: Please enter a number between 1 and {len(options)}.")
-        except ValueError:
-            # Check if user typed the option name directly
-            if user_input.upper() in [opt.upper() for opt in options]:
-                for opt in options:
-                    if opt.upper() == user_input.upper():
-                        return opt
-            print(f"   Error: Invalid input. Enter a number or option name.")
 
 def get_license_input() -> str:
     """
@@ -593,13 +545,14 @@ def confirm_creation(config: dict) -> bool:
     print(f"  Family Name:   {config['family_name']}")
     print(f"  Author:        {config['author_name']}")
     print(f"  License:       {config['license_text'][:50]}...")
-    # print(f"  Repository:    {config['repo_url']}")
-    # print(f"  Source Status: {config['src_status']}")
     print(f"  Description:   {config['description']}")
     print(f"  Bit Sizes:     {bits_display} ({len(bits_list)} variant{'s' if len(bits_list) > 1 else ''})")
-    print(f"  LSH Candidate: Yes")
-    print(f"  Similarity:    {config['similarity_name']}")
-    print(f"  Similarity Fn: {config['similarityfn']}")
+    if config.get('is_lsh', True):
+        print(f"  LSH Candidate: Yes (FLAG_HASH_LOCALITY_SENSITIVE will be set)")
+        print(f"  Similarity:    {config['similarity_name']}")
+        print(f"  Similarity Fn: {config['similarityfn']}")
+    else:
+        print(f"  LSH Candidate: No (helper/non-LSH hash function)")
     if params_count > 0:
         print(f"  Parameters:    {params_count} parameter{'s' if params_count > 1 else ''}")
     print(f"  Output File:   {config['filepath']}")
@@ -754,13 +707,12 @@ def create_hash_file(config: dict) -> str:
 
     sim_name = config['similarity_name']
     is_builtin = sim_name in BUILTIN_SIMILARITY_NAMES
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>.", is_builtin)
 
     # Determine extra includes needed for certain similarity functions
     extra_includes = ""
     if is_builtin and sim_name in ("edit", "jaccard", "cosine", "angular"):
         extra_includes = '\n#include <vector>\n#include <cmath>\n#include <set>\n#include <map>\n#include "assertMsg.h"'
-    elif is_builtin and sim_name == "Hamming":
+    elif is_builtin and sim_name == "hamming":
         extra_includes = '\n#include "assertMsg.h"'
 
     # Generate parameter #define statements
@@ -794,33 +746,25 @@ def create_hash_file(config: dict) -> str:
             hash_name=config['hash_name'],
             suffix=suffix,
             hash_vars=hash_vars,
-            add_logic = add_logic,
+            add_logic=add_logic,
             put_calls=put_calls,
             len_bytes=bits // 8
         )
 
-    # Insert the similarity function code
-    if is_builtin:
-        _, sim_code = BUILTIN_SIMILARITY_CODE[sim_name]
-        content += sim_code
-    else:
-        content += TEMPLATE_CUSTOM_SIMILARITY.format(
-            similarityfn=config['similarityfn']
-        )
-
+    # Insert the similarity function code (LSH candidates only)
+    if config.get('is_lsh', True):
+        if is_builtin:
+            _, sim_code = BUILTIN_SIMILARITY_CODE[sim_name]
+            content += sim_code
+        else:
+            content += TEMPLATE_CUSTOM_SIMILARITY.format(
+                similarityfn=config['similarityfn']
+            )
 
     # Add REGISTER_FAMILY
     content += TEMPLATE_FAMILY_REGISTER.format(
         family_name=config['family_name']
     )
-
-
-    # # Add REGISTER_FAMILY
-    # content += TEMPLATE_FAMILY_REGISTER.format(
-    #     family_name=config['family_name'],
-    #     repo_url=config['repo_url'],
-    #     src_status=config['src_status']
-    # )
 
     # Generate REGISTER_HASH for each bit size
     for bits in bits_list:
@@ -839,16 +783,26 @@ def create_hash_file(config: dict) -> str:
             param_values = ", ".join(config['parameterNames'])
             parameters_str = f",\n   $.parameterNames  = {{{param_names}}},\n   $.parameterDescriptions  = {{{param_descs}}},\n   $.parameterValues = {{{param_values}}}"
 
-        content += TEMPLATE_HASH_REGISTER.format(
-            hash_name=config['hash_name'],
-            suffix=suffix,
-            description=config['description'],
-            bits_desc=bits_desc,
-            bits=bits,
-            similarity_name=config['similarity_name'],
-            similarityfn=config['similarityfn'],
-            parameters=parameters_str
-        )
+        if config.get('is_lsh', True):
+            content += TEMPLATE_HASH_REGISTER.format(
+                hash_name=config['hash_name'],
+                suffix=suffix,
+                description=config['description'],
+                bits_desc=bits_desc,
+                bits=bits,
+                similarity_name=config['similarity_name'],
+                similarityfn=config['similarityfn'],
+                parameters=parameters_str
+            )
+        else:
+            content += TEMPLATE_HASH_REGISTER_HELPER.format(
+                hash_name=config['hash_name'],
+                suffix=suffix,
+                description=config['description'],
+                bits_desc=bits_desc,
+                bits=bits,
+                parameters=parameters_str
+            )
 
     with open(config['filepath'], 'w') as f:
         f.write(content)
@@ -904,29 +858,7 @@ def main():
     else:
         config['family_name'] = config['hash_name']
 
-    # # Step 5: Repository URL
-    # print_step(5, total_steps, "Repository URL")
-    # print("Enter the URL of your source code repository.")
-    # config['repo_url'] = get_input_with_validation(
-    #     "Repository URL",
-    #     validate_url,
-    #     default="https://github.com/username/repo_name"
-    # )
-
-    # # Step 6: Source Status
-    # print_step(6, total_steps, "Source Status")
-    # print("Select the source code status.")
-    # print("  UNKNOWN	- No Information available")
-    # print("  FROZEN    	- Code is finalized, no changes expected")
-    # print("  STABLEISH 	- Code is stable but minor updates possible")
-    # print("  ACTIVE    	- Code is actively being developed")
-    # config['src_status'] = get_choice_input(
-    #     "Select source status:",
-    #     SRC_STATUS_OPTIONS,
-    #     default="STABLEISH"
-    # )
-
-    # Step 7: Description
+    # Step 5: Description
     print_step(5, total_steps, "Hash Description")
     print("Enter a brief description of your hash function.")
     config['description'] = get_input_with_validation(
@@ -934,89 +866,91 @@ def main():
         validate_description
     )
 
-    # Step 8: Bits
+    # Step 6: Bits
     print_step(6, total_steps, "Hash Output Size")
     print("Select the hash output size in bits.")
     config['bits'] = get_bits_input()
 
-    # Step 9: LSH Candidacy
+    # Step 7: LSH Candidacy
     print_step(7, total_steps, "LSH Candidacy")
-    print("BioLSHasher is a framework for evaluating Locality-Sensitive Hashing (LSH) functions.")
-    print("All test suites in BioLSHasher are designed to test LSH properties.")
+    print("This step determines whether the hash function should be treated as an LSH candidate")
+    print("or as a non-LSH helper hash function.")
+    print()
+    print("BioLSHasher supports both LSH candidate hash functions and non-LSH helper hash functions.")
+    print("However, the tests are designed for evaluating LSH properties, so only")
+    print("hashes marked as LSH candidates are allowed to be tested.")
+    print()
+    print("  Y (default) : LSH candidate. FLAG_HASH_LOCALITY_SENSITIVE will be set.")
+    print("  N           : Non-LSH helper function. For use as an helper hash function.")
     print()
     while True:
-        lsh_input = input("Is this hash an LSH candidate to be tested for LSH properties? [Y/n]: ").strip().lower()
+        lsh_input = input("Is this hash an LSH candidate? [Y/n]: ").strip().lower()
         if lsh_input in ('', 'y', 'yes'):
             config['is_lsh'] = True
             print("  Marked as LSH candidate. FLAG_HASH_LOCALITY_SENSITIVE will be set.")
             break
         elif lsh_input in ('n', 'no'):
-            print()
-            print("=" * 60)
-            print("  BioLSHasher only contains tests related to Locality-Sensitive")
-            print("  Hashing (LSH). Non-LSH hash functions are not supported by")
-            print("  the current tests.")
-            print()
-            print("  Non-LSH hash functions are supported as helper functions")
-            print("  inside an LSH hash function and they can be added manually.")
-            print()
-            print("  If you want to test your hash for LSH properties, please rerun")
-            print("  this script and select 'Y' at the LSH candidacy step.")
-            print("=" * 60)
-            sys.exit(0)
+            config['is_lsh'] = False
+            print("  Marked as non-LSH helper hash function.")
+            print("  similarity_name and similarityfn will be left empty.")
+            break
         else:
             print("  Please enter 'y' for yes or 'n' for no.")
 
-    # Step 10: Similarity Name
-    print_step(8, total_steps, "Similarity Name")
-    print("Enter the name of the similarity measure that this hash function preserves.")
-    print(f"Built-in options: {', '.join(BUILTIN_SIMILARITY_NAMES_CAPITAL)}")
-    print("You may also enter a custom similarity name if yours is not listed above.")
-    print("Ensure that the name ends with a small case for readability.")
-    print()
-    print("  Something to Note: If your hash function uses edit similarity, just write 'Edit'")
-    print("        - not 'Edit Similarity' or 'EditSimilarity'.")
-    print()
-    config['similarity_name'] = get_input_with_validation(
-        "Similarity name",
-        validate_similarity_name
-    )
-    config['similarity_name'] = config['similarity_name'].lower().strip()
-
-    # Step 11: Similarity Function
-    sim_name = config['similarity_name']
-
-
-    if sim_name in BUILTIN_SIMILARITY_NAMES:
-        # Built-in: auto-set the function name and include the implementation
-        builtin_fn, _ = BUILTIN_SIMILARITY_CODE[sim_name]
-        config['similarityfn'] = builtin_fn
-        print_step(9, total_steps, "Similarity Function")
-        print(f"'{sim_name}' is a built-in similarity metric in BioLSHasher.")
-        print(f"The implementation of '{builtin_fn}' will be included in your hash file.")
-        print(f"  -> Similarity function set to: {builtin_fn}")
-    else:
-        # Custom: ask the user to name their function
-        print_step(9, total_steps, "Similarity Function")
-        print(f"'{sim_name}' is a custom similarity metric.")
-        print("Enter the name of your C++ similarity function.")
-        print("This function computes the ground-truth similarity between two input sequences.")
-        print("It must follow the SimilarityFn signature:")
-        print("double FnName(const std::string& seq1, const std::string& seq2,")
-        print("                 const uint32_t in1_len, const uint32_t in2_len);")
+    if config['is_lsh']:
+        # Step 8: Similarity Name
+        print_step(8, total_steps, "Similarity Name")
+        print("Enter the name of the similarity measure that this hash function preserves.")
+        print(f"Built-in options: {', '.join(BUILTIN_SIMILARITY_NAMES_CAPITAL)}")
+        print("You may also enter a custom similarity name if yours is not listed above.")
+        print("Ensure that the name ends with a small case for readability.")
         print()
-        print(f"  Example: You might name it '{sim_name}Similarity'.")
-        config['similarityfn'] = get_input_with_validation(
-            "Similarity function name",
-            validate_similarityfn_name
+        print("  Something to Note: If your hash function uses edit similarity, just write 'Edit'")
+        print("        - not 'Edit Similarity' or 'EditSimilarity'.")
+        print()
+        config['similarity_name'] = get_input_with_validation(
+            "Similarity name",
+            validate_similarity_name
         )
+        config['similarity_name'] = config['similarity_name'].lower().strip()
 
-    # Step 10: Parameters
+        # Step 9: Similarity Function
+        sim_name = config['similarity_name']
+
+        if sim_name in BUILTIN_SIMILARITY_NAMES:
+            # Built-in: auto-set the function name and include the implementation
+            builtin_fn, _ = BUILTIN_SIMILARITY_CODE[sim_name]
+            config['similarityfn'] = builtin_fn
+            print_step(9, total_steps, "Similarity Function")
+            print(f"'{sim_name}' is a built-in similarity metric in BioLSHasher.")
+            print(f"The implementation of '{builtin_fn}' will be included in your hash file.")
+            print(f"  -> Similarity function set to: {builtin_fn}")
+        else:
+            # Custom: ask the user to name their function
+            print_step(9, total_steps, "Similarity Function")
+            print(f"'{sim_name}' is a custom similarity metric.")
+            print("Enter the name of your C++ similarity function.")
+            print("This function computes the ground-truth similarity between two input sequences.")
+            print("It must follow the SimilarityFn signature:")
+            print("double FnName(const std::string& seq1, const std::string& seq2,")
+            print("                 const uint32_t in1_len, const uint32_t in2_len);")
+            print()
+            print(f"  Example: You might name it '{sim_name}Similarity'.")
+            config['similarityfn'] = get_input_with_validation(
+                "Similarity function name",
+                validate_similarityfn_name
+            )
+    else:
+        # Non-LSH helper: skip similarity steps, leave fields empty
+        config['similarity_name'] = ""
+        config['similarityfn'] = ""
+
+    # Step 10: Parameters (always shown)
     print_step(10, total_steps, "Hash Function Parameters")
     config['parameterNames'], config['parameterDescriptions'], config['parameterValues'] = get_parameters_input()
 
     # Determine file path
-    filename = config['hash_name'].lower() + ".cpp"	# the file name should be in lowercase
+    filename = config['hash_name'].lower() + ".cpp"
     config['filepath'] = os.path.join(output_dir, filename)
 
     # Check if file exists
