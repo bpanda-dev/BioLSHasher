@@ -1,7 +1,5 @@
 # BioLSHasher : Genomic Hash Function Testing Framework
 
-<!-- ![Logo](https://github.com/bpanda-dev/biolshasher/blob/main/BioLSHasherLogo.png?raw=true) -->
-
 ![Logo](BioLSHasherLogo.png?raw=true)
 
 ## Overview
