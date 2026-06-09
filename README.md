@@ -83,6 +83,10 @@ To get started with BioLSHasher, follow these steps:
 
 This project builds upon the SMHasher3 framework. Please refer to individual source files for specific licensing information.
 
+## Acknowledgments
+
+- Logo design: ChatGPT
+
 ## References
 
 - [SMHasher3](https://gitlab.com/fwojcik/smhasher3): Original hash testing framework biolshasher is based on.
