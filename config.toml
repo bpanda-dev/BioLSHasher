@@ -32,11 +32,11 @@ Mutation_Expression_Type = 0
 
 # AND Parameter Sweep (B: number of concatenated hash codes)
 Coll_Num_Hashes_To_And_Sweep_Start = 1
-Coll_Num_Hashes_To_And_Sweep_End = 2
+Coll_Num_Hashes_To_And_Sweep_End = 1
 
 # OR Parameter Sweep (R: number of hash tables)
 Coll_Num_Hashes_To_Or_Sweep_Start = 1
-Coll_Num_Hashes_To_Or_Sweep_End = 2
+Coll_Num_Hashes_To_Or_Sweep_End = 1
 
 # There are three speed levels which depends on the hash computation time. 
 # There are very_slow, slow, and default. 
@@ -60,14 +60,14 @@ NHashes 		= 2000
 
 # Database and Query Configuration
 Total_Sequences_In_Database_To_Search_From = 50000
-Total_Query_Sequences_To_Search = 2000
+Total_Query_Sequences_To_Search = 1000
 
 # Statistical Averaging
 Number_of_Runs_to_get_Average = 3
 
 # AND and OR Parameter Sweep
 SimSearch_Num_Hashes_To_And_Sweep_Start = 1
-SimSearch_Num_Hashes_To_And_Sweep_End = 2
+SimSearch_Num_Hashes_To_And_Sweep_End = 3
 SimSearch_Num_Hashes_To_Or_Sweep_Start = 1
 SimSearch_Num_Hashes_To_Or_Sweep_End = 3
 

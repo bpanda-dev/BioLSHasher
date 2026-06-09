@@ -375,7 +375,7 @@ def plot_recall_vs_fpr_scatter(df, output_path, use_log=False):
     ax.set_xlabel(f'Average FPR{scale_lbl}', fontsize=13)
     ax.set_ylabel('Average Recall', fontsize=13)
     if use_log:
-        ax.set_xscale('symlog', linthresh=1e-5)
+        ax.set_xscale('symlog', linthresh=1e-7)
     
     ax.legend(loc='best', fontsize=10, title='Experiment')
     finalize(ax, fig, output_path, texts)
@@ -427,7 +427,7 @@ def plot_recall_vs_fpr(df, output_path, use_log=False):
     ax.set_xlabel(f'Average FPR{scale_lbl}', fontsize=13)
     ax.set_ylabel('Average Recall', fontsize=13)
     if use_log:
-        ax.set_xscale('symlog', linthresh=1e-6)
+        ax.set_xscale('symlog', linthresh=1e-7)
     ax.legend(loc='best', fontsize=9, title='b  (experiment)')
     finalize(ax, fig, output_path, texts)
  
@@ -522,7 +522,7 @@ def plot_best_fpr_per_recall_bin(df, output_path, num_bins=15, use_log=False):
     ax.set_xlabel('Recall Bin Center', fontsize=13)
     ax.set_ylabel(f'Best (Min) FPR in Bin{scale_lbl}', fontsize=13)
     if use_log:
-        ax.set_yscale('symlog', linthresh=1e-6)
+        ax.set_yscale('symlog', linthresh=1e-7)
     ax.legend(loc='best', fontsize=10, title='Experiment')
     finalize(ax, fig, output_path, texts)
 
