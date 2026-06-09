@@ -1,10 +1,20 @@
 # BioLSHasher : Genomic Hash Function Testing Framework
 
-![alt text](https://github.com/bpanda-dev/biolshasher/blob/main/BioLSHasherLogo.png?raw=true)
+<!-- ![Logo](https://github.com/bpanda-dev/biolshasher/blob/main/BioLSHasherLogo.png?raw=true) -->
+
+![Logo](BioLSHasherLogo.png?raw=true)
 
 ## Overview
 
-BioLSHasher is a specialized Locality Sensitive Hash function testing framework designed with biological context in mind. It is built upon the hash function testing framework [SMHasher3](https://gitlab.com/fwojcik/smhasher3). BioLSHasher currently supports two tests Collision Curve Test and Threshold-based Similarity Search Test, both of which support and-or amplification.
+BioLSHasher is a C++ testing framework for evaluating locality-sensitive hash (LSH) functions in the context of biological sequence analysis. Built on top of the [SMHasher3](https://gitlab.com/fwojcik/smhasher3) testing harness, it provides a complete workflow to add and register custom hash implementations, run mutation-aware benchmarks (collision-curve analysis and threshold based near neighbour search performance evaluation), and produce CSV results along with interactive plots.
+
+Use BioLSHasher to measure how well LSH families preserve biological similarity, compare retrieval quality across (b,r) LSH parameterizations, and select practical hashing strategies for genomic applications.
+
+<!-- 
+BioLSHasher is a specialized Locality Sensitive Hash function testing framework designed with biological context in mind. It is built upon the hash function testing framework [SMHasher3](https://gitlab.com/fwojcik/smhasher3). BioLSHasher currently supports two tests Collision Curve Test and Threshold-based Similarity Search Test, both of which support and-or amplification. -->
+
+> **Full documentation:** [biolshasher-guide.readthedocs.io](https://biolshasher-guide.readthedocs.io/en/latest/)
+
 
 ## Getting Started
 

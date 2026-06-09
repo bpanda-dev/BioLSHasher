@@ -2,7 +2,7 @@
 
 # Configuration
 START_D=1
-END_D=70
+END_D=46
 STEP=5
 BASE_DIR=$(pwd)
 RESULTS_DIR="$BASE_DIR/results_sweep"
@@ -18,9 +18,9 @@ echo "=========================================="
 
 for k in $(seq $START_D $STEP $END_D); do
     echo ""
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "========================================"
     echo "Processing D_PARAM=$k"
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "========================================"
     
     # Clean build directory
     rm -rf "$BUILD_DIR"
