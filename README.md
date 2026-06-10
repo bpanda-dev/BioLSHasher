@@ -1,4 +1,4 @@
-# BioLSHasher : Genomic LSH Function Testing Framework
+# BioLSHasher: Genomic Testing Framework for Locality Sensitive Hash Functions
 
 ![Logo](BioLSHasherLogo.png?raw=true)
 
