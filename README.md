@@ -93,6 +93,8 @@ BioLSHasher is a specialized Locality Sensitive Hash function testing framework 
        firefox ../results/Hamming/Hamming_dashboard.html
    ```
 
+  You should see a dashboard similar to the one [here](tODO)
+  
 ## Acknowledgments
 
 - BioLSHasher is built on top of the [SMHasher3](https://gitlab.com/fwojcik/smhasher3) suite. 
