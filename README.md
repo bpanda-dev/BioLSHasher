@@ -4,15 +4,25 @@
 
 ## Overview
 
-BioLSHasher is a C++ testing framework for evaluating locality-sensitive hash (LSH) functions in the context of biological sequence analysis. Built on top of the [SMHasher3](https://gitlab.com/fwojcik/smhasher3) testing harness, it provides a complete workflow to add and register custom hash implementations, run mutation-aware benchmarks (collision-curve analysis and threshold based near neighbour search performance evaluation), and produce CSV results along with interactive plots.
+BioLSHasher is a C++ benchmark suite for evaluating how well a practical hash function fits the definition of a locality-senstive hash function in the context of genomics. 
+A locality senstive hash (LSH) function is, informally, a hash function that maps similar elements to the same bucket with high probability and maps dissimilar elements to different buckets with low probability. 
+Many hash functions attempt to mimick this property even if they are not provably LSH functions.
+This benchmark suite gives developers and users a way to evaluate the extent to which their hash function exhibits LSH properties in practice. 
 
-Use BioLSHasher to measure how well LSH families preserve biological similarity, compare retrieval quality across LSH parameterizations and AND-OR amplifications, and select practical hashing strategies for genomic applications.
+BioLSHasher supports four different similarity metrics: Hamming, Jaccard, angular, and edit. Rather than testing LSH properties on random strings, BioLSHasher tests it on evolutionarily related strings, as is common in genomics. 
+Concretely, it generates mutated strings from a random source string by introducing substitutions, deletions, and insertions, and 
+then measures whether the hash function exhibits LSH properties on such string pairs.
+
+To measure LSH properties, BioLSHasher performs two types of analysis. 
+The first is a collision curve analysis, which shows the observed collision rates as a function of similarity.
+The second is an analysis of false positive and false negative rates when used as part of nearest neighbour similarity search. 
+Both of these analyses are combined with the effect of AND-OR amplification.
+These analyses generate a dashboard of results, an example of which can be viewed [here](link needed). 
+
+This README provides a brief guide to installing and running a simple test. The full documentation is provided at [biolshasher-guide.readthedocs.io](https://biolshasher-guide.readthedocs.io/en/latest/).
 
 <!-- 
 BioLSHasher is a specialized Locality Sensitive Hash function testing framework designed with biological context in mind. It is built upon the hash function testing framework [SMHasher3](https://gitlab.com/fwojcik/smhasher3). BioLSHasher currently supports two tests Collision Curve Test and Threshold-based Similarity Search Test, both of which support and-or amplification. -->
-
-> **Full documentation:** [biolshasher-guide.readthedocs.io](https://biolshasher-guide.readthedocs.io/en/latest/)
-
 
 ## Getting Started
 
@@ -85,10 +95,10 @@ This project builds upon the SMHasher3 framework. Please refer to individual sou
 
 ## Acknowledgments
 
+- BioLSHasher is built on top of the [SMHasher3](https://gitlab.com/fwojcik/smhasher3) suite. 
 - Logo design: ChatGPT
 
-## References
+## Citation
 
-- [SMHasher3](https://gitlab.com/fwojcik/smhasher3): Original hash testing framework biolshasher is based on.
-- Hash functions in genomic sequence analysis - Ke Chen, Xiang Li, Qian Shi, Mingfu Shao, Paul Medvedev
-- Shrivastava, Anshumali, and Ping Li. "In defense of minhash over simhash." Artificial intelligence and statistics. PMLR, 2014.
+Paper describing BioLSHasher is forthcoming. For now, please cite
+- Bikram Kumar Panda and Paul Medvedev, Benchmarking Locality-Sensitive Hash Functions for Genome Sequence Analysis using BioLSHasher, in progress.
