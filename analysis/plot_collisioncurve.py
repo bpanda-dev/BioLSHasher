@@ -262,10 +262,10 @@ def plot_binned_average_curve(
     y_values = np.array(row['collision_rates'])
 
     # Define bins
-    bin_edges = np.arange(0, 1.04, 0.04)
-    num_bins = len(bin_edges) - 1
-    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
-    # print(bin_centers)
+    bin_edges = np.arange(0, 1.01, 0.01)  # 0.00, 0.01, 0.02, ..., 1.00
+    num_bins = len(bin_edges) - 1  # 100 bins
+    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2  # Proper bin centers
+
 
     # Compute mean for each bin
     bin_means = []
@@ -288,12 +288,18 @@ def plot_binned_average_curve(
 
     # Build label
     if row['AND_param'] == '1' and row['OR_param'] == '1':
-        param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns']])
-        label = f"{row['hashname']} (L={row['sequencelength']}, {param_labels})[{mutation_model_used}]"
+        param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns'] if row[name] != 0.0])
+        if param_labels:
+            label = f"{row['hashname']} (L={row['sequencelength']}, {param_labels})[{mutation_model_used}]"
+        else:
+            label = f"{row['hashname']} (L={row['sequencelength']})[{mutation_model_used}]"
     else:
-        param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns']])
-        label = f"{row['hashname']} (L={row['sequencelength']}, {param_labels}, b={row['AND_param']}, r={row['OR_param']})[{mutation_model_used}]"
-
+        param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns'] if row[name] != 0.0])
+        if param_labels:
+            label = f"{row['hashname']} (L={row['sequencelength']}, {param_labels}, b={row['AND_param']}, r={row['OR_param']})[{mutation_model_used}]"
+        else:
+            label = f"{row['hashname']} (L={row['sequencelength']}, b={row['AND_param']}, r={row['OR_param']})[{mutation_model_used}]"
+            
     ax.plot(
         bin_centers[valid],
         bin_means[valid],
@@ -327,10 +333,10 @@ def finalize_binned_average_plot(
     ax.set_ylim(-0.01, 1.01)
     ax.minorticks_on()
     ax.grid(visible=True, which="both", axis="both", alpha=0.5)
-    ax.set_xlabel(similarity_label, fontsize=16)
-    ax.set_ylabel('Average Collision Rate per bin', fontsize=16)
-    ax.tick_params(axis='both', labelsize=14)  # Add this line
-    ax.legend(fontsize=12)
+    ax.set_xlabel(similarity_label, fontsize=22)
+    ax.set_ylabel('Average Collision Rate per bin', fontsize=22)
+    ax.tick_params(axis='both', labelsize=20)  # Add this line
+    ax.legend(fontsize=18)
     ax.figure.tight_layout()
 
     if savename:
@@ -399,14 +405,19 @@ def finalize_binned_average_plot(
 #         if row['MutationModel'] == 1:
 #             mutation_model_used = "SubIndel-" + mutation_expressions[row["MutationExpression"]]
 
-#         # Build label
-#         if row['AND_param'] == '1' and row['OR_param'] == '1':
-#             param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns']])
-#             label = f"{row['hashname']} (L={row['sequencelength']}, {param_labels})[{mutation_model_used}]"
-#         else:
-#             param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns']])
-#             label = f"{row['hashname']} (L={row['sequencelength']}, AND={row['AND_param']}, OR={row['OR_param']}, {param_labels})[{mutation_model_used}]"
-
+        # # Build label
+        # if row['AND_param'] == '1' and row['OR_param'] == '1':
+        #     param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns'] if row[name] != 0.0])
+        #     if param_labels:
+        #         label = f"{row['hashname']} (L={row['sequencelength']}, {param_labels})[{mutation_model_used}]"
+        #     else:
+        #         label = f"{row['hashname']} (L={row['sequencelength']})[{mutation_model_used}]"
+        # else:
+        #     param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns'] if row[name] != 0.0])
+        #     if param_labels:
+        #         label = f"{row['hashname']} (L={row['sequencelength']}, {param_labels}, b={row['AND_param']}, r={row['OR_param']})[{mutation_model_used}]"
+        #     else:
+        #         label = f"{row['hashname']} (L={row['sequencelength']}, b={row['AND_param']}, r={row['OR_param']})[{mutation_model_used}]"
 
 #         # if hash_name == "SubseqHash-64":
 #         #     k_val = row.get('SubseqHash_k', '?')
@@ -525,12 +536,17 @@ def plot_monocolor_scatter(
 
         # Build label
         if row['AND_param'] == '1' and row['OR_param'] == '1':
-            param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns']])
-            label = f"{row['hashname']} (L={row['sequencelength']}, {param_labels})[{mutation_model_used}]"
+            param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns'] if row[name] != 0.0])
+            if param_labels:
+                label = f"{row['hashname']} (L={row['sequencelength']}, {param_labels})[{mutation_model_used}]"
+            else:
+                label = f"{row['hashname']} (L={row['sequencelength']})[{mutation_model_used}]"
         else:
-            param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns']])
-            label = f"{row['hashname']} (L={row['sequencelength']}, AND={row['AND_param']}, OR={row['OR_param']}, {param_labels})[{mutation_model_used}]"
-
+            param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns'] if row[name] != 0.0])
+            if param_labels:
+                label = f"{row['hashname']} (L={row['sequencelength']}, {param_labels}, b={row['AND_param']}, r={row['OR_param']})[{mutation_model_used}]"
+            else:
+                label = f"{row['hashname']} (L={row['sequencelength']}, b={row['AND_param']}, r={row['OR_param']})[{mutation_model_used}]"
 
         # Scatter plot with colorbar
         scatter = ax.scatter(x_values, y_values,
@@ -548,7 +564,7 @@ def plot_monocolor_scatter(
         ax.grid(True, alpha=0.5)
 
         ax.legend( labels=[label], loc='upper left', fontsize=18)
-        ax.tick_params(axis='both', labelsize=14)
+        ax.tick_params(axis='both', labelsize=20)
 
     # Hide unused subplots (if n_rows < total grid slots)
     for j in range(n_rows, len(axes)):
@@ -567,7 +583,7 @@ def plot_monocolor_scatter(
         else:
             final_name = save_filename
 
-        plt.savefig(final_name, dpi=600)
+        plt.savefig(final_name, dpi=600, bbox_inches='tight')
         print(f"Plot saved to {final_name}")
 
     if show_plot:
@@ -640,7 +656,7 @@ def plot_hash_collision_boxplots(
         if row['MutationModel'] == 1:
             mutation_model_used = "SubIndel-" + mutation_expressions[row["MutationExpression"]]
 
-        param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns']])
+        param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns'] if row[name] != 0.0])
         base_label = f"{hash_name} (L={seq_len}, {param_labels}"
 
         if show_params:
@@ -717,8 +733,8 @@ def plot_hash_collision_boxplots(
         tick_labels_to_show = [f"{bin_edges[p-1]:.1f}" for p in tick_pos_to_show]
 
         ax.set_xticks(tick_pos_to_show)
-        ax.set_xticklabels(tick_labels_to_show, fontsize=14)
-        ax.tick_params(axis='y', labelsize=14)
+        ax.set_xticklabels(tick_labels_to_show)
+        ax.tick_params(axis='both', labelsize=20)
 
     # Hide unused subplots
     for j in range(n_rows, len(axes)):
@@ -733,7 +749,7 @@ def plot_hash_collision_boxplots(
         else:
             final_name = save_filename
 
-        plt.savefig(final_name, dpi=600)
+        plt.savefig(final_name, dpi=600, bbox_inches='tight')
         print(f"Plot saved to {final_name}")
 
     if show_plot:
@@ -786,7 +802,7 @@ def plot_hash_collision_boxplots(
 #         elif row['MutationModel'] == 1:
 #             mutation_model_used = "SubIndel-" + mutation_expressions[row["MutationExpression"]]
 
-#         param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns']])
+#         param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns'] if row[name] != 0.0])
 #         label = f"{hash_name} (L={seq_len}, {param_labels})[{mutation_model_used}]"
         
 #         if not (and_param == '1' and or_param == '1'):
@@ -934,7 +950,7 @@ def plot_verification_curves(
         elif row['MutationModel'] == 1:
             mutation_model_used = "SubIndel-" + mutation_expressions[row["MutationExpression"]]
 
-        param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns']])
+        param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns'] if row[name] != 0.0])
         title = f"{hash_name} (L={seq_len}, {param_labels})[{mutation_model_used}]"
 
         and_param = str(row.get('AND_param', '1'))
@@ -956,11 +972,11 @@ def plot_verification_curves(
                     linewidth=lw,
                 )
 
-        ax.set_title(title, fontsize=14)
-        ax.legend(fontsize=10, loc='upper right')
-        ax.set_xlabel("Parameter Value", fontsize=12)
-        ax.set_ylabel("Density", fontsize=12)
-        ax.tick_params(axis='both', labelsize=10)
+        ax.set_title(title, fontsize=24)
+        ax.legend(fontsize=18, loc='upper right')
+        ax.set_xlabel("Parameter Value", fontsize=22)
+        ax.set_ylabel("Density", fontsize=22)
+        ax.tick_params(axis='both', labelsize=20)
 
     # Hide unused subplots
     for j in range(n_rows, len(axes)):
@@ -974,7 +990,7 @@ def plot_verification_curves(
             final_name = f"{save_filename}_verificationCurves.png"
         else:
             final_name = save_filename
-        plt.savefig(final_name, dpi=300, bbox_inches='tight')
+        plt.savefig(final_name, dpi=600, bbox_inches='tight')
         print(f"Plot saved to {final_name}")
 
     if show_plot:
@@ -1108,7 +1124,7 @@ def main():
 
     # --- Average per bin ---
     print("Plotting binned average curve...")
-    fig, ax = plt.subplots(figsize=(11, 7))
+    fig, ax = plt.subplots(figsize=(w_subplot, h_subplot))
     """Add ideal line, vertical markers, grid, legend, and optionally save."""
     # ax.plot([0, 1], [0, 1], color="black", linewidth=1, alpha=1, label="Theoretical similarity estimator")
 
@@ -1137,16 +1153,17 @@ def main():
     # --- MonoColor Scatter Plot ---
     if not args.no_scatter:
         print("Plotting monocolor scatter...")
+        # Dynamically set n_cols: use 1 column if only 1 row, else use 2
+        n_cols = 1 if len(df) == 1 else 2
         savename = os.path.join(output_dir, f"{similarity_name}_monocolor_scatter_plot.png")
-        plot_monocolor_scatter(df, xlabel=similarity, n_cols=2, save_filename = savename, show_plot=False)
-        # print(f"Saved: {savename}")
+        plot_monocolor_scatter(df, xlabel=similarity, n_cols=n_cols, save_filename=savename, show_plot=False)
 
     # --- Box Plot ---
     if not args.no_boxplot:
         print("Plotting box plots...")
+        n_cols = 1 if len(df) == 1 else 2
         savename = os.path.join(output_dir, f"{similarity_name}_box_plot.png")
-        plot_hash_collision_boxplots(df, xlabel=similarity, n_cols=2,  save_filename = savename, show_plot=False)
-        # print(f"Saved: {savename}")
+        plot_hash_collision_boxplots(df, xlabel=similarity, n_cols=n_cols, save_filename=savename, show_plot=False)
 
     # Process all rows and compute rho for each
     rho_results = []
@@ -1159,7 +1176,7 @@ def main():
             result = compute_rho(row, s1, s2, bin_width=bin_width)
             
             # Extract hash parameters
-            param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns']])
+            param_labels = ", ".join([f"{name}={row[name]}" for name in row['parameter_columns'] if row[name] != 0.0])
             
             rho_results.append({
                 'hashname': row['hashname'],

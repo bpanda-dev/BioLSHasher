@@ -26,7 +26,7 @@
 #include "LSHGlobals.h"
 
 
-#define TOKEN_LENGTH 32
+#define TOKEN_LENGTH 33
 
 
 

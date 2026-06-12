@@ -13,7 +13,7 @@
 # Mutation Model Selection
 # 0 = SIMPLE_SNP_ONLY (substitutions only)
 # 1 = GEOMETRIC_MUTATOR (substitutions + indels)
-Mutation_Model = 1
+Mutation_Model = 0
 
 # Mutation Expression Type
 # 0 = BALANCED (equal SNP/ins/del occurrence probabilities)
@@ -32,23 +32,23 @@ Mutation_Expression_Type = 0
 
 # AND Parameter Sweep (B: number of concatenated hash codes)
 Coll_Num_Hashes_To_And_Sweep_Start = 1
-Coll_Num_Hashes_To_And_Sweep_End = 1
+Coll_Num_Hashes_To_And_Sweep_End = 2
 
 # OR Parameter Sweep (R: number of hash tables)
 Coll_Num_Hashes_To_Or_Sweep_Start = 1
-Coll_Num_Hashes_To_Or_Sweep_End = 1
+Coll_Num_Hashes_To_Or_Sweep_End = 3
 
 # There are three speed levels which depends on the hash computation time. 
 # There are very_slow, slow, and default. 
 # Increase any of the values will increase the runtime of the tests. 
 very_Slow_NSeq		= 2000
-very_Slow_NHashes	= 2000
+very_Slow_NHashes	= 1024
 
 Slow_NSeq		= 5000
-Slow_NHashes	= 2000
+Slow_NHashes	= 1024
 
 NSeq 			= 5000
-NHashes 		= 2000
+NHashes 		= 1024
 
 
 
@@ -82,7 +82,7 @@ Similarity_Threshold = 0.95
 
 [Common_Configuration]
 
-Sequence_Length = 50
+Sequence_Length = 1024
 
 # Base Distribution for Nucleotide Generation
 # true = Uniform distribution across {A, C, G, T}
