@@ -9,7 +9,7 @@ A locality senstive hash (LSH) function is, informally, a hash function that map
 Many hash functions attempt to mimick this property even if they are not provably LSH functions.
 This benchmark suite gives developers and users a way to evaluate the extent to which their hash function exhibits LSH properties in practice. 
 
-BioLSHasher supports four different similarity metrics: Hamming, Jaccard, angular, and edit. Rather than testing LSH properties on random strings, BioLSHasher tests it on evolutionarily related strings, as is common in genomics. 
+BioLSHasher by default has inbuilt support for five different similarity metrics: Hamming, Jaccard, angular, cosine and edit; but users can also define and implement custom metrics. Rather than testing LSH properties on random strings, BioLSHasher tests it on evolutionarily related strings, as is common in genomics. 
 Concretely, it generates mutated strings from a random source string by introducing substitutions, deletions, and insertions, and 
 then measures whether the hash function exhibits LSH properties on such string pairs.
 
