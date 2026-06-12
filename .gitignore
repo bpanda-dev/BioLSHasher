@@ -17,7 +17,6 @@ a.out
 
 .gdbinit
 
-
-
+*.outdata
 *.csv
 

@@ -623,8 +623,7 @@ bool LSHCollisionTest( const HashInfo * hinfo, flags_t flags) {
 		std::filesystem::create_directories(results_dir);
 	}
 
-	// std::string filename = results_dir_str + "/collisionResults_" + std::string(hinfo->name) + ".csv";
-	std::string filename = results_dir_str + "/collisionResults_" + hinfo->similarity_name + ".csv";
+	std::string filename = results_dir_str + "/collisionResults_" + hinfo->similarity_name + ".outdata";
 
 	std::ios_base::openmode mode = std::ios::trunc;  // Default: replace
 	if (std::filesystem::exists(filename)) {
@@ -632,7 +631,7 @@ bool LSHCollisionTest( const HashInfo * hinfo, flags_t flags) {
 	}
 	std::ofstream out_file(filename, mode);
 	if (!out_file.is_open()) {
-		throw std::runtime_error("Error: Could not open output file");
+		throw std::runtime_error("Error: Could not open BioLSHasher output data files");
 	}
 
 	uint32_t sequenceLength = g_SequenceLength;

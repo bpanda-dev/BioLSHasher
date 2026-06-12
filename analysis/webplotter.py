@@ -328,7 +328,7 @@ def plot_ann_query_time_vs_recall(df):
 def main():
     parser = argparse.ArgumentParser(
         description="Generate interactive Plotly visualizations for BioLSHasher processed metrics.")
-    parser.add_argument("csv_files", nargs='+', help="Paths to *_processed-*.csv files")
+    parser.add_argument("outdatafile", nargs='+', help="Paths to *_processed-*.outdata files")
     parser.add_argument("--show", action="store_true", help="Launch browser with plots immediately")
     args = parser.parse_args()
 
@@ -337,7 +337,7 @@ def main():
     basename = "BioLSHasher"
     out_dir = ""
 
-    for f in args.csv_files:
+    for f in args.outdatafile:
         if not os.path.isfile(f):
             print(f"File not found: {f}")
             continue

@@ -70,16 +70,16 @@ BioLSHasher is a specialized Locality Sensitive Hash function testing framework 
    ```
 
      It should produce to output files, written to the `results/` directory under `BioLSHasher`:
-    - `collisionResults_Hamming.csv`
-    - `ApproxNearestNeighbourResults_Hamming.csv`
+    - `collisionResults_Hamming.outdata`
+    - `ApproxNearestNeighbourResults_Hamming.outdata`
 
 
 8. Generate standard CSVs, plots, and an interactive visualisation dahsboard.
 
     ```bash
         python ../analysis/generate_report.py \
-        --coll=../results/collisionResults_Hamming.csv \
-        --ann=../results/approxNearestNeighbourResults_Hamming.csv
+        --coll=../results/collisionResults_Hamming.outdata \
+        --ann=../results/approxNearestNeighbourResults_Hamming.outdata
     ```
 
    This writes all plots and processed CSVs to the `results/Hamming` directory.

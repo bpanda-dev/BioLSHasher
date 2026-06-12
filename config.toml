@@ -13,7 +13,7 @@
 # Mutation Model Selection
 # 0 = SIMPLE_SNP_ONLY (substitutions only)
 # 1 = GEOMETRIC_MUTATOR (substitutions + indels)
-Mutation_Model = 0
+Mutation_Model = 1
 
 # Mutation Expression Type
 # 0 = BALANCED (equal SNP/ins/del occurrence probabilities)

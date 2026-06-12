@@ -291,6 +291,8 @@ static void examplehash_initialisation() {
 
         g_simThresholdForApproxNNTest = 0.95; // Similarity threshold for Approx Nearest Neighbour test. Adjust as needed.
 
+        g_mutation_model = 0;
+        g_mutation_expression_type = 0; // Mutation expression is in don't care status when Substitution only status is selected.
         //---------------------------------------------------------------------------------------
 
         // Global variables for runtime communication

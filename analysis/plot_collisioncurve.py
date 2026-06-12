@@ -1053,11 +1053,11 @@ def compute_rho(df, s1, s2, bin_width=0.05, eps=1e-6):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="BioLSHasher collision data plotter — reads a CSV result file and generates plots."
+        description="BioLSHasher collision data plotter - reads the BioLSHasher output data files and generates analysis plots."
     )
     parser.add_argument(
-        "csvfile",
-        help="Path to the collision results CSV file (e.g. results/collisionResults_SubseqHash-64.csv)"
+        "outdatafile",
+        help="Path to the collision results output data file (e.g. results/collisionResults_SubseqHash-64.outdata)"
     )
     # parser.add_argument(
     #     "--similarity", "-s",
@@ -1087,13 +1087,13 @@ def main():
     args = parser.parse_args()
 
     # Validate file exists
-    if not os.path.isfile(args.csvfile):
-        print(f"Error: file not found: {args.csvfile}", file=sys.stderr)
+    if not os.path.isfile(args.outdatafile):
+        print(f"Error: file not found: {args.outdatafile}", file=sys.stderr)
         sys.exit(1)
 
     # Read data
-    print(f"Reading: {args.csvfile}")
-    sections, df = read_collision_data_complete(args.csvfile)
+    print(f"Reading: {args.outdatafile}")
+    sections, df = read_collision_data_complete(args.outdatafile)
 
     if df.empty:
         print("Error: no data rows parsed from the CSV.", file=sys.stderr)
@@ -1112,7 +1112,7 @@ def main():
     similarity_name = df.iloc[0].get('DistanceMetric', 'results')
 
     # Create output directory for plots based on CSV path and similarity_name
-    csv_dir = os.path.dirname(os.path.abspath(args.csvfile))
+    csv_dir = os.path.dirname(os.path.abspath(args.outdatafile))
     output_dir = os.path.join(csv_dir, similarity_name)
     os.makedirs(output_dir, exist_ok=True)
     print(f"Plots will be saved in: {output_dir}")
